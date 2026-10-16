@@ -307,13 +307,16 @@ models:
         owner: logistics_analytics
         lifecycle: maintained
   - name: fct_orders
-    description: "One row per order. Item values aggregated before event join; last scan ordered by occurrence; customer tier joined at order time."
+    description: "One row per order, merged by order_id. Item values are aggregated before event join; last scan uses occurrence time; customer tier is joined at order time. Schema changes require an explicit migration and historical rebuild."
     config:
       meta:
         owner: logistics_analytics
         lifecycle: maintained
+    columns:
+      - name: is_open_order
+        description: "1 for confirmed, processing, or in-transit orders; 0 for fulfilled or cancelled orders. Recomputed for the full retained history during a migration."
   - name: fct_invoice_lines
-    description: "Invoice landing projection with optional exact-replay removal. Default preserves incident DQ-INV-01."
+    description: "Invoice line fact. Exact business replays are collapsed while ingestion lineage retains the latest landing row."
     config:
       meta:
         owner: finance_analytics

@@ -11,9 +11,7 @@ with ranked as (
                 when raw_status = 'picked_up' then 'shipped'
                 when raw_status = 'in_transit' then 'in_transit'
                 when raw_status = 'delivered' then 'delivered'
-                {% if var('apply_incident_fixes') %}
                 when raw_status = 'exception_hold' then 'on_hold'
-                {% endif %}
                 else 'unmapped' end as event_status,
            cast(event_occurred_at as timestamp) as event_occurred_at,
            cast(loaded_at as timestamp) as loaded_at,

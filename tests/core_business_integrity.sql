@@ -1,5 +1,4 @@
 {{ config(severity='error', tags=['core_quality'], store_failures=true) }}
--- Seed-level contract deliberately independent of both incident branches.
 with accounts as (select * from {{ ref('raw_accounts') }}),
 orders as (select * from {{ ref('raw_orders') }}),
 items as (select * from {{ ref('raw_order_items') }}),

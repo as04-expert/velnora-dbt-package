@@ -1,3 +1,5 @@
+{{ config(materialized='incremental', incremental_strategy='merge', unique_key='order_id', file_format='delta', on_schema_change='fail') }}
+
 with item_totals as (
     select order_id, sum(quantity) as ordered_units,
            sum(line_net_usd_cents) as booked_value_usd_cents,
@@ -16,6 +18,7 @@ select o.order_id, o.account_id, a.account_name, a.industry, a.region,
        h.customer_tier as customer_tier_at_order, h.payment_terms_days as payment_terms_days_at_order,
        o.order_date, o.ordered_at, o.promised_delivery_date, o.order_status, o.currency_code,
        i.ordered_units,
+       case when o.order_status in ('confirmed', 'processing', 'in_transit') then 1 else 0 end as is_open_order,
        case when o.order_status = 'cancelled' then 0 else i.booked_value_usd_cents end as booked_value_usd_cents,
        case when o.order_status = 'cancelled' then 0 else i.booked_cost_usd_cents end as booked_cost_usd_cents,
        coalesce(e.event_status, case when o.order_status = 'cancelled' then 'cancelled' else 'not_shipped' end) as latest_carrier_status,
