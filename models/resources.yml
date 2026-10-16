@@ -1,0 +1,344 @@
+version: 2
+seeds:
+  - name: raw_accounts
+    description: "CRM account state at the fixed fixture cutoff. One row per fictional account."
+    config:
+      column_types:
+        account_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        account_name: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        industry: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        region: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        country_code: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        customer_tier: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        payment_terms_days: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        credit_limit_usd_cents: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        account_status: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        created_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        updated_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        source_system: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+    columns:
+      - name: account_id
+        description: "account id"
+      - name: account_name
+        description: "account name"
+      - name: industry
+        description: "industry"
+      - name: region
+        description: "region"
+      - name: country_code
+        description: "country code"
+      - name: customer_tier
+        description: "customer tier"
+      - name: payment_terms_days
+        description: "payment terms days"
+      - name: credit_limit_usd_cents
+        description: "Integer USD cents. Blank means not yet available."
+      - name: account_status
+        description: "account status"
+      - name: created_at
+        description: "UTC timestamp text. Blank is null."
+      - name: updated_at
+        description: "UTC timestamp text. Blank is null."
+      - name: source_system
+        description: "source system"
+  - name: raw_account_changes
+    description: "Sixteen CRM effective changes. Initial states plus four changes. Business history supplied explicitly, not a dbt snapshot."
+    config:
+      column_types:
+        change_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        account_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        effective_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        customer_tier: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        payment_terms_days: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        credit_limit_usd_cents: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        account_status: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        change_reason: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        source_updated_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+    columns:
+      - name: change_id
+        description: "change id"
+      - name: account_id
+        description: "account id"
+      - name: effective_at
+        description: "UTC timestamp text. Blank is null."
+      - name: customer_tier
+        description: "customer tier"
+      - name: payment_terms_days
+        description: "payment terms days"
+      - name: credit_limit_usd_cents
+        description: "Integer USD cents. Blank means not yet available."
+      - name: account_status
+        description: "account status"
+      - name: change_reason
+        description: "change reason"
+      - name: source_updated_at
+        description: "UTC timestamp text. Blank is null."
+  - name: raw_orders
+    description: "ERP sales order header. Forty-eight orders; cancelled orders retain their original lines."
+    config:
+      column_types:
+        order_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        account_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        ordered_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        promised_delivery_date: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        order_status: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        currency_code: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        sales_channel: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        customer_po: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        cancelled_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        source_updated_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        loaded_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        ingestion_batch_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+    columns:
+      - name: order_id
+        description: "order id"
+      - name: account_id
+        description: "account id"
+      - name: ordered_at
+        description: "UTC timestamp text. Blank is null."
+      - name: promised_delivery_date
+        description: "promised delivery date"
+      - name: order_status
+        description: "order status"
+      - name: currency_code
+        description: "currency code"
+      - name: sales_channel
+        description: "sales channel"
+      - name: customer_po
+        description: "customer po"
+      - name: cancelled_at
+        description: "UTC timestamp text. Blank is null."
+      - name: source_updated_at
+        description: "UTC timestamp text. Blank is null."
+      - name: loaded_at
+        description: "UTC timestamp text. Blank is null."
+      - name: ingestion_batch_id
+        description: "ingestion batch id"
+  - name: raw_order_items
+    description: "ERP order line with booked price and cost captured at order entry. USD cents."
+    config:
+      column_types:
+        order_item_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        order_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        line_number: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        sku: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        product_name: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        quantity: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        unit_price_usd_cents: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        unit_cost_usd_cents: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        discount_bps: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        line_discount_usd_cents: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        line_net_usd_cents: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        currency_code: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+    columns:
+      - name: order_item_id
+        description: "order item id"
+      - name: order_id
+        description: "order id"
+      - name: line_number
+        description: "line number"
+      - name: sku
+        description: "sku"
+      - name: product_name
+        description: "product name"
+      - name: quantity
+        description: "quantity"
+      - name: unit_price_usd_cents
+        description: "Integer USD cents. Blank means not yet available."
+      - name: unit_cost_usd_cents
+        description: "Integer USD cents. Blank means not yet available."
+      - name: discount_bps
+        description: "discount bps"
+      - name: line_discount_usd_cents
+        description: "Integer USD cents. Blank means not yet available."
+      - name: line_net_usd_cents
+        description: "Integer USD cents. Blank means not yet available."
+      - name: currency_code
+        description: "currency code"
+  - name: raw_carrier_events
+    description: "Carrier landing rows. Includes one exact replay, one late arriving scan and one new status code."
+    config:
+      column_types:
+        ingestion_row_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        event_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        shipment_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        order_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        carrier_code: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        raw_status: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        event_occurred_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        loaded_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        ingestion_batch_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        proof_of_delivery_ref: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+    columns:
+      - name: ingestion_row_id
+        description: "ingestion row id"
+      - name: event_id
+        description: "event id"
+      - name: shipment_id
+        description: "shipment id"
+      - name: order_id
+        description: "order id"
+      - name: carrier_code
+        description: "carrier code"
+      - name: raw_status
+        description: "raw status"
+      - name: event_occurred_at
+        description: "UTC timestamp text. Blank is null."
+      - name: loaded_at
+        description: "UTC timestamp text. Blank is null."
+      - name: ingestion_batch_id
+        description: "ingestion batch id"
+      - name: proof_of_delivery_ref
+        description: "proof of delivery ref"
+  - name: raw_invoice_lines
+    description: "Billing landing rows. Includes one exact logical-line replay with a distinct ingestion row ID."
+    config:
+      column_types:
+        ingestion_row_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        invoice_line_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        invoice_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        order_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        order_item_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        invoice_date: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        due_date: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        quantity: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        net_amount_usd_cents: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        currency_code: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        source_updated_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        loaded_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        ingestion_batch_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+    columns:
+      - name: ingestion_row_id
+        description: "ingestion row id"
+      - name: invoice_line_id
+        description: "invoice line id"
+      - name: invoice_id
+        description: "invoice id"
+      - name: order_id
+        description: "order id"
+      - name: order_item_id
+        description: "order item id"
+      - name: invoice_date
+        description: "invoice date"
+      - name: due_date
+        description: "due date"
+      - name: quantity
+        description: "quantity"
+      - name: net_amount_usd_cents
+        description: "Integer USD cents. Blank means not yet available."
+      - name: currency_code
+        description: "currency code"
+      - name: source_updated_at
+        description: "UTC timestamp text. Blank is null."
+      - name: loaded_at
+        description: "UTC timestamp text. Blank is null."
+      - name: ingestion_batch_id
+        description: "ingestion batch id"
+  - name: raw_return_events
+    description: "Eight RMA observations. Optional fields follow lifecycle state. Payload v1.1 lacks serial lists."
+    config:
+      column_types:
+        return_event_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        rma_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        order_item_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        requested_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        return_status: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        quantity: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        reason_code: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        received_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        credited_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        credit_amount_usd_cents: "{{ 'int64' if target.type == 'bigquery' else 'bigint' }}"
+        payload_schema_version: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        raw_payload: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        source_updated_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+        loaded_at: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
+    columns:
+      - name: return_event_id
+        description: "return event id"
+      - name: rma_id
+        description: "rma id"
+      - name: order_item_id
+        description: "order item id"
+      - name: requested_at
+        description: "UTC timestamp text. Blank is null."
+      - name: return_status
+        description: "return status"
+      - name: quantity
+        description: "quantity"
+      - name: reason_code
+        description: "reason code"
+      - name: received_at
+        description: "UTC timestamp text. Blank is null."
+      - name: credited_at
+        description: "UTC timestamp text. Blank is null."
+      - name: credit_amount_usd_cents
+        description: "Integer USD cents. Blank means not yet available."
+      - name: payload_schema_version
+        description: "payload schema version"
+      - name: raw_payload
+        description: "raw payload"
+      - name: source_updated_at
+        description: "UTC timestamp text. Blank is null."
+      - name: loaded_at
+        description: "UTC timestamp text. Blank is null."
+models:
+  - name: stg_accounts
+    description: "CRM account dimension. Current values retain source names and business segments."
+    config:
+      meta:
+        owner: data_platform
+        lifecycle: maintained
+  - name: stg_orders
+    description: "ERP order headers cast to dates and timestamps. Cancelled rows retained."
+    config:
+      meta:
+        owner: revenue_operations
+        lifecycle: maintained
+  - name: stg_order_items
+    description: "Ordered quantities and unit economics in integer USD cents."
+    config:
+      meta:
+        owner: finance_analytics
+        lifecycle: maintained
+  - name: stg_carrier_events
+    description: "Event-ID replay removal. Unknown raw statuses remain explicitly unmapped."
+    config:
+      meta:
+        owner: logistics_analytics
+        lifecycle: maintained
+  - name: fct_orders
+    description: "One row per order. Item values aggregated before event join; last scan ordered by occurrence; customer tier joined at order time."
+    config:
+      meta:
+        owner: logistics_analytics
+        lifecycle: maintained
+  - name: fct_invoice_lines
+    description: "Invoice landing projection with optional exact-replay removal. Default preserves incident DQ-INV-01."
+    config:
+      meta:
+        owner: finance_analytics
+        lifecycle: maintained
+  - name: dim_account_history
+    description: "Type 2 account history from supplied effective changes. Half-open validity intervals."
+    config:
+      meta:
+        owner: data_platform
+        lifecycle: maintained
+  - name: mart_daily_operations
+    description: "Order-date cohorts with booked demand, delivery SLA and return requests as of fixed cutoff. Bookings are not recognized revenue."
+    config:
+      meta:
+        owner: operations_analytics
+        lifecycle: maintained
+  - name: bronze_returns_enrichment
+    description: "Disabled draft. Parses typed envelope only. Serial extraction and disposition mapping remain unfinished."
+    config:
+      meta:
+        owner: support_data
+        lifecycle: draft
+  - name: bronze_invoice_allocations
+    description: "Disabled draft. Freight allocation work has no approved rule or freight source. Not ready for reporting."
+    config:
+      meta:
+        owner: finance_analytics
+        lifecycle: draft

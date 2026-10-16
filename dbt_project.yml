@@ -1,0 +1,29 @@
+name: velnora_fixture
+version: '1.0.0'
+config-version: 2
+profile: velnora_fixture
+require-dbt-version: [">=1.8.0", "<2.0.0"]
+model-paths: [models]
+seed-paths: [seeds]
+test-paths: [tests]
+target-path: target
+log-path: logs
+clean-targets: [target, logs]
+vars:
+  fixture_as_of_date: '2026-10-13'
+  apply_incident_fixes: false
+models:
+  velnora_fixture:
+    +materialized: view
+    staging:
+      +tags: [silver]
+    marts:
+      +materialized: table
+      +tags: [gold]
+    bronze:
+      +enabled: false
+      +tags: [bronze, wip]
+seeds:
+  velnora_fixture:
+    +quote_columns: false
+    +tags: [bronze, fixture]
