@@ -1,0 +1,66 @@
+version: 2
+
+models:
+  - name: mart_customer_order_metrics
+    description: >-
+      One row per CRM account, including accounts with no orders. Retained fixture
+      orders through fixture_as_of_date, with current CRM attributes and order-state
+      metrics from fct_orders. This is the fixed fixture snapshot, not a reconstruction
+      of historical status at an arbitrary date. Bookings are not recognized revenue.
+    config:
+      meta:
+        owner: operations_analytics
+        lifecycle: maintained
+    columns:
+      - name: account_id
+        description: Customer key from the CRM account dimension.
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
+      - name: customer_tier
+        description: Current CRM tier at the fixture cutoff, rather than tier at order time.
+      - name: order_count
+        description: All orders including cancelled orders; zero for customers without orders.
+      - name: non_cancelled_order_count
+        description: Order count excluding cancelled orders; denominator for average booked order value.
+      - name: delivered_order_count
+        description: Orders with a recorded delivery event.
+      - name: on_time_delivered_order_count
+        description: Delivered orders with delivery date on or before the promised delivery date.
+      - name: late_delivered_order_count
+        description: Delivered orders with delivery date after the promised delivery date.
+      - name: on_time_delivery_pct
+        description: 0 to 100; on-time delivered orders divided by delivered orders, rounded to 2 decimals. Null when no deliveries exist.
+      - name: pending_order_count
+        description: Sum of the fact's is_open_order flag; confirmed, processing, or in_transit orders.
+      - name: overdue_pending_order_count
+        description: Undelivered, non-cancelled orders with promised delivery date strictly before fixture_as_of_date.
+      - name: not_overdue_pending_order_count
+        description: Pending orders whose promise has not passed; orders due on the cutoff are not overdue.
+      - name: in_transit_order_count
+        description: Pending orders with ERP status in_transit; a subset of pending orders.
+      - name: pending_order_pct
+        description: 0 to 100; pending orders divided by all orders, rounded to 2 decimals. Null when there are no orders.
+      - name: ordered_units
+        description: Ordered units excluding cancelled orders.
+      - name: booked_value_usd_cents
+        description: Booked demand in integer USD cents; cancelled orders contribute zero. Not recognized revenue.
+      - name: booked_cost_usd_cents
+        description: Booked cost in integer USD cents; cancelled orders contribute zero.
+      - name: booked_margin_usd_cents
+        description: Booked value minus booked cost, in integer USD cents.
+      - name: pending_value_usd_cents
+        description: Booked value of pending orders, in integer USD cents.
+      - name: average_order_value_usd_cents
+        description: Booked value divided by non-cancelled order count, in USD cents. Null when no non-cancelled orders exist.
+      - name: first_order_date
+        description: Earliest order date, including cancelled orders. Null for customers without orders.
+      - name: last_order_date
+        description: Latest order date, including cancelled orders. Null for customers without orders.
+      - name: as_of_date
+        description: Fixed fixture cutoff from fixture_as_of_date; defaults to 2026-10-13.
+
